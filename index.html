@@ -4,7 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>Math Blitz: 30s Challenge</title>
+    <meta name="description"
+        content="Challenge your brain with Math Blitz! A fast-paced 30-second math game to improve your mental calculation skills. Play for free now!">
+    <meta name="keywords" content="Math Game, Speed Math, Mental Arithmetic, Educational Game, Math Blitz">
+
+    <meta property="og:title" content="Math Blitz: 30s Challenge">
+    <meta property="og:description"
+        content="Can you beat the 30-second math challenge? Test your speed and score high!">
+    <meta property="og:url" content="https://math-hero-song.vercel.app">
+    <meta property="og:type" content="website">
+
     <style>
         :root {
             --main-bg: #f8f9fa;
@@ -61,6 +72,7 @@
             transition: 0.2s;
             width: 100%;
             font-weight: bold;
+            -webkit-tap-highlight-color: transparent;
         }
 
         button:active {
@@ -132,7 +144,7 @@
                 <div id="score">Score: 0</div>
                 <div id="timer">Time: 30s</div>
             </div>
-            <div id="question">7 × 8</div>
+            <div id="question">Loading...</div>
             <div class="options-grid">
                 <button>0</button><button>0</button><button>0</button><button>0</button>
             </div>
@@ -173,12 +185,14 @@
             const num2 = Math.floor(Math.random() * 9) + 1;
             correctAnswer = num1 * num2;
             document.getElementById('question').innerText = `${num1} × ${num2}`;
+
             let options = [correctAnswer];
             while (options.length < 4) {
                 let wrong = (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 9) + 1);
                 if (!options.includes(wrong)) options.push(wrong);
             }
             options.sort(() => Math.random() - 0.5);
+
             const buttons = document.querySelectorAll('#game-screen .options-grid button');
             buttons.forEach((btn, index) => {
                 btn.innerText = options[index];
@@ -209,12 +223,14 @@
         function check(answer) {
             const card = document.getElementById('main-card');
             if (answer === correctAnswer) {
-                correctSound.play().catch(e => { });
+                const sfx = correctSound.cloneNode();
+                sfx.play().catch(e => { });
                 score += 10;
                 document.getElementById('score').innerText = "Score: " + score;
                 generateQuestion();
             } else {
-                wrongSound.play().catch(e => { });
+                const sfx = wrongSound.cloneNode();
+                sfx.play().catch(e => { });
                 card.classList.add('shake');
                 score = Math.max(0, score - 5);
                 document.getElementById('score').innerText = "Score: " + score;
@@ -225,7 +241,6 @@
             }
         }
 
-        // 공유 기능 함수
         function shareScore() {
             const text = `I scored ${score} points on Math Blitz! Can you beat me? 🔥`;
             if (navigator.share) {
@@ -235,7 +250,7 @@
                     url: window.location.href
                 }).catch(console.error);
             } else {
-                alert("Sharing is not supported on this browser. Copy the URL to share!");
+                alert("URL을 복사하여 친구들에게 공유해 보세요!");
             }
         }
     </script>
