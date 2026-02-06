@@ -10,6 +10,8 @@
             --main-bg: #f8f9fa;
             --card-bg: #ffffff;
             --primary: #0d77f0;
+            --success: #2ecc71;
+            --error: #e74c3c;
         }
 
         body {
@@ -27,9 +29,9 @@
             background: var(--card-bg);
             width: 90%;
             max-width: 400px;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem 1.5rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
@@ -44,9 +46,10 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
+        /* 버튼 스타일 */
         button {
             padding: 20px;
             font-size: 1.5rem;
@@ -56,43 +59,55 @@
             color: white;
             cursor: pointer;
             transition: 0.2s;
-            -webkit-tap-highlight-color: transparent;
+            width: 100%;
         }
 
         button:active {
             transform: scale(0.95);
-            opacity: 0.9;
         }
 
-        #score {
+        .start-btn {
+            background: var(--success);
+            font-weight: bold;
+            font-size: 1.8rem;
+        }
+
+        #score,
+        #timer {
             font-size: 1.2rem;
             color: #666;
+            margin: 5px;
+            display: inline-block;
+            width: 45%;
         }
 
-        /* 흔들리는 애니메이션 정의 */
+        #timer {
+            color: var(--error);
+            font-weight: bold;
+        }
+
+        /* 화면 전환용 */
+        .hidden {
+            display: none;
+        }
+
+        /* 애니메이션 */
         @keyframes shake {
-            0% {
+
+            0%,
+            100% {
                 transform: translateX(0);
             }
 
             25% {
-                transform: translateX(-10px);
-            }
-
-            50% {
-                transform: translateX(10px);
+                transform: translateX(-8px);
             }
 
             75% {
-                transform: translateX(-10px);
-            }
-
-            100% {
-                transform: translateX(0);
+                transform: translateX(8px);
             }
         }
 
-        /* 애니메이션을 실행할 클래스 */
         .shake {
             animation: shake 0.3s;
         }
@@ -100,66 +115,121 @@
 </head>
 
 <body>
-    <div class="game-card">
-        <div id="score">Score: 0</div>
-        <div id="question">7 × 8</div>
-        <div class="options-grid">
-            <button onclick="check(48)">48</button>
-            <button onclick="check(56)">56</button>
-            <button onclick="check(63)">63</button>
-            <button onclick="check(72)">72</button>
+    <div class="game-card" id="main-card">
+        <div id="start-screen">
+            <h1 style="color: var(--primary); margin-bottom: 30px;">Math Hero</h1>
+            <p style="color: #666; margin-bottom: 40px;">How many problems can you solve<br>in 30 seconds?</p>
+            <button class="start-btn" onclick="startGame()">START</button>
+        </div>
+
+        <div id="game-screen" class="hidden">
+            <div>
+                <div id="score">Score: 0</div>
+                <div id="timer">Time: 30s</div>
+            </div>
+            <div id="question">7 × 8</div>
+            <div class="options-grid">
+                <button>0</button><button>0</button><button>0</button><button>0</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h2 id="result-comment" style="color: var(--success);">Great Job!</h2>
+            <p style="font-size: 1.2rem; margin: 0;">Your Final Score</p>
+            <div id="final-score-display" style="font-size: 3.5rem; font-weight: bold; margin: 15px 0;">0</div>
+            <button onclick="startGame()" style="background: var(--primary);">Play Again</button>
         </div>
     </div>
 
     <script>
         let score = 0;
         let correctAnswer = 0;
+        let timeLeft = 30;
+        let timerInterval;
+
+        const correctSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
+        const wrongSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2022/2022-preview.mp3');
+
+        // 게임 시작 함수
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            document.getElementById('score').innerText = "Score: 0";
+            document.getElementById('timer').innerText = "Time: 30s";
+
+            // 화면 전환
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            generateQuestion();
+            startTimer();
+        }
 
         function generateQuestion() {
             const num1 = Math.floor(Math.random() * 9) + 1;
             const num2 = Math.floor(Math.random() * 9) + 1;
             correctAnswer = num1 * num2;
-
             document.getElementById('question').innerText = `${num1} × ${num2}`;
 
-            // 1. 정답과 오답들을 섞어서 배열로 만듭니다.
-            let options = [
-                correctAnswer,
-                correctAnswer + 2,
-                correctAnswer - 2,
-                correctAnswer + 5
-            ];
-
-            // 2. 배열을 무작위로 섞습니다. (정답이 항상 같은 자리에 있으면 안 되니까요!)
+            let options = [correctAnswer];
+            while (options.length < 4) {
+                let wrong = (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 9) + 1);
+                if (!options.includes(wrong)) options.push(wrong);
+            }
             options.sort(() => Math.random() - 0.5);
 
-            // 3. 화면에 있는 버튼 4개에 숫자를 하나씩 넣어줍니다.
             const buttons = document.querySelectorAll('.options-grid button');
             buttons.forEach((btn, index) => {
-                btn.innerText = options[index]; // 버튼에 숫자 표시
-                btn.onclick = () => check(options[index]); // 버튼 클릭 시 해당 숫자 체크
+                btn.innerText = options[index];
+                btn.onclick = () => check(options[index]);
             });
         }
-        function check(answer) {
-            const card = document.querySelector('.game-card');
 
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = "Time: " + timeLeft + "s";
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showResult();
+                }
+            }, 1000);
+        }
+
+        function showResult() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            let message = "";
+            if (score >= 150) message = "You're a Math Genius! 👑";
+            else if (score >= 100) message = "Amazing work! 🌟";
+            else if (score >= 50) message = "Good job! 👍";
+            else message = "Nice try! 💪";
+
+            document.getElementById('result-comment').innerText = message;
+            document.getElementById('final-score-display').innerText = score;
+        }
+
+        function check(answer) {
+            const card = document.getElementById('main-card');
             if (answer === correctAnswer) {
+                correctSound.play().catch(e => { });
                 score += 10;
                 document.getElementById('score').innerText = "Score: " + score;
                 generateQuestion();
             } else {
-                // 틀렸을 때 애니메이션 클래스 추가
+                wrongSound.play().catch(e => { });
                 card.classList.add('shake');
-
-                // 0.3초 후 애니메이션 클래스 제거 (재사용을 위해)
+                score = Math.max(0, score - 5);
+                document.getElementById('score').innerText = "Score: " + score;
                 setTimeout(() => {
                     card.classList.remove('shake');
+                    generateQuestion();
                 }, 300);
             }
         }
-
-        // 처음 시작할 때 문제 생성
-        generateQuestion();
     </script>
 </body>
 
