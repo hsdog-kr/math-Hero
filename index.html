@@ -2,14 +2,15 @@
 <html lang="en">
 
 <head>
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-WPZVC5DC');</script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LHNBWREGP3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-LHNBWREGP3');
+    </script>
 
     <meta name="google-site-verification" content="8B96YQh7CPi_WLObdAuHL5NOioqLdWoROKyj89W-LLQ" />
     <meta name="naver-site-verification" content="40b205bb14fac46f55191208b0fc4ea49d6daebe" />
@@ -273,8 +274,6 @@
 </head>
 
 <body>
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WPZVC5DC" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe></noscript>
     <div class="stars"></div>
     <div class="game-card" id="main-card">
         <div id="feedback-msg">LEVEL UP! 🚀</div>
