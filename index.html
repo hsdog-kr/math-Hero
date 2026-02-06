@@ -2,33 +2,57 @@
 <html lang="en">
 
 <head>
+    <meta name="google-site-verification" content="8B96YQh7CPi_WLObdAuHL5NOioqLdWoROKyj89W-LLQ" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="google-site-verification" content="8B96YQh7CPi_WLObdAuHL5NOioqLdWoROKyj89W-LLQ" />
-    <title>Math Blitz: Master Edition</title>
+    <title>Math Blitz: Space Mission</title>
+    <meta name="description"
+        content="Level up your math skills in space! Challenges in addition, subtraction, multiplication, and division.">
+
+    <meta property="og:title" content="Math Blitz: Space Mission ⚡">
+    <meta property="og:description" content="I'm a Space Math Pilot! Can you beat my high score?">
+    <meta property="og:image" content="https://s3-us-west-2.amazonaws.com/s.cdpn.io/123163/stars.png">
+
     <style>
         :root {
-            --main-bg: #e0f2f1;
-            --card-bg: #ffffff;
-            --primary: #4fc3f7;
-            --success: #81c784;
-            --error: #ff8a65;
-            --level: #ffd54f;
-            --text: #37474f;
-            --accent: #ba68c8;
-            --gold: #ffc107;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --primary: #0288d1;
+            --success: #43a047;
+            --error: #d32f2f;
+            --text: #263238;
+            --accent: #7b1fa2;
         }
 
         body {
-            background: var(--main-bg);
-            font-family: 'Segoe UI', 'Nanum Gothic', sans-serif;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            overflow: hidden;
-            transition: background 0.5s ease;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/123163/stars.png') repeat;
+            z-index: 0;
+            opacity: 0.4;
+            animation: space-move 150s linear infinite;
+        }
+
+        @keyframes space-move {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: -10000px 5000px;
+            }
         }
 
         .game-card {
@@ -37,165 +61,182 @@
             max-width: 400px;
             padding: 2rem 1.5rem;
             border-radius: 30px;
-            box-shadow: 0 20px 0 rgba(0, 0, 0, 0.05);
+            box-shadow: 0 0 40px rgba(79, 195, 247, 0.4);
             text-align: center;
-            border: 8px solid #b2dfdb;
             position: relative;
-            z-index: 1;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            margin: 20px 0;
         }
 
-        @keyframes rainbow-flash {
-            0% {
-                background: #ffcdd2;
-            }
-
-            20% {
-                background: #fff9c4;
-            }
-
-            40% {
-                background: #c8e6c9;
-            }
-
-            60% {
-                background: #b3e5fc;
-            }
-
-            80% {
-                background: #d1c4e9;
-            }
-
-            100% {
-                background: var(--main-bg);
-            }
+        #level-header {
+            position: absolute;
+            top: -45px;
+            left: 0;
+            width: 100%;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 10px #4fc3f7;
         }
 
-        .level-up-anim {
-            animation: rainbow-flash 1s ease infinite;
+        .briefing-box {
+            background: rgba(2, 136, 209, 0.05);
+            border-radius: 15px;
+            padding: 12px;
+            margin: 15px 0;
+            text-align: left;
+            font-size: 0.85rem;
+            color: #546e7a;
+            line-height: 1.5;
+        }
+
+        #feedback-msg {
+            position: absolute;
+            width: 100%;
+            top: 15px;
+            left: 0;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #fbc02d;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.5s;
+            z-index: 20;
+        }
+
+        .show-msg {
+            opacity: 1 !important;
+            transform: scale(1.1);
         }
 
         h1 {
-            color: #0288d1;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 0 #e1f5fe;
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 5px;
         }
 
         #question {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 900;
-            margin: 0.5rem 0;
+            margin: 1rem 0;
             color: var(--text);
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
             margin-top: 1rem;
         }
 
         button {
-            padding: 18px;
-            font-size: 1.6rem;
+            padding: 16px;
+            font-size: 1.5rem;
             border: none;
-            border-radius: 20px;
-            background: var(--primary);
+            border-radius: 18px;
+            background: #4fc3f7;
             color: white;
             cursor: pointer;
             transition: 0.2s;
             width: 100%;
             font-weight: bold;
-            box-shadow: 0 6px 0 #0288d1;
+            box-shadow: 0 5px 0 #0288d1;
         }
 
         button:active {
-            transform: translateY(4px);
+            transform: translateY(3px);
             box-shadow: 0 2px 0 #0288d1;
         }
 
+        .mode-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
         .mode-btn {
-            padding: 10px 15px;
+            padding: 12px;
             font-size: 0.9rem;
-            background: #eceff1;
+            background: #f5f5f5;
             border-radius: 12px;
             cursor: pointer;
-            border: 3px solid transparent;
+            border: 2px solid transparent;
             font-weight: bold;
+            color: #546e7a;
         }
 
         .mode-btn.active {
-            border-color: var(--primary);
+            border-color: #4fc3f7;
             background: #e1f5fe;
             color: #0277bd;
         }
 
         .start-btn {
-            background: var(--success);
-            box-shadow: 0 6px 0 #43a047;
-            font-size: 1.8rem;
-            margin-top: 15px;
+            background: #66bb6a;
+            box-shadow: 0 6px 0 #388e3c;
+            font-size: 1.6rem;
+            margin-top: 10px;
+            grid-column: span 2;
+        }
+
+        /* 공유 버튼 스타일 */
+        .share-btn {
+            background: #ffb74d !important;
+            box-shadow: 0 5px 0 #f57c00 !important;
+            margin-top: 10px;
+            font-size: 1.2rem !important;
+            padding: 12px !important;
         }
 
         #info-box {
             display: flex;
             justify-content: space-between;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #f5f5f5;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.03);
             border-radius: 15px;
-        }
-
-        #level-display {
-            color: #f57c00;
-            font-size: 1.4rem;
-            font-weight: 900;
-            margin-bottom: 5px;
         }
 
         .ranking-list {
             text-align: left;
-            margin: 15px 0;
-            padding: 15px;
-            background: #fffde7;
+            margin-top: 10px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.02);
             border-radius: 20px;
-            border: 3px dashed #fff176;
+            border: 2px dashed #b3e5fc;
+            max-height: 180px;
+            overflow-y: auto;
         }
 
         .ranking-item {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid #fff9c4;
-            color: #5d4037;
-            font-weight: bold;
-        }
-
-        .top-ranker {
-            color: #d84315;
-            background: #fff9c4;
-            border-radius: 8px;
-            padding: 2px 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 8px 5px;
+            border-bottom: 1px solid #e1f5fe;
+            color: #37474f;
+            font-size: 1rem;
         }
 
         input {
-            padding: 12px;
-            width: 60%;
-            border-radius: 12px;
-            border: 3px solid #eee;
-            font-size: 1rem;
+            padding: 14px;
+            width: 70%;
+            border-radius: 15px;
+            border: 2px solid #cfd8dc;
+            font-size: 1.1rem;
             outline: none;
+            margin-bottom: 10px;
         }
 
         .hidden {
             display: none;
-        }
-
-        .shake {
-            animation: shake 0.3s;
         }
 
         @keyframes shake {
@@ -206,89 +247,89 @@
             }
 
             25% {
-                transform: translateX(-10px);
+                transform: translateX(-8px);
             }
 
             75% {
-                transform: translateX(10px);
+                transform: translateX(8px);
             }
+        }
+
+        .shake {
+            animation: shake 0.3s;
         }
     </style>
 </head>
 
 <body>
+    <div class="stars"></div>
     <div class="game-card" id="main-card">
+        <div id="feedback-msg">LEVEL UP! 🚀</div>
+
         <div id="start-screen">
             <h1>Math Blitz! ⚡</h1>
-            <p style="color: #546e7a; font-weight: bold;">Level Up & Get Extra Time!</p>
-            <div class="mode-select" style="display:flex; gap:8px; justify-content:center; margin-bottom:15px;">
-                <div class="mode-btn active" onclick="setMode('add', this)">Add(+)</div>
-                <div class="mode-btn" onclick="setMode('sub', this)">Sub(-)</div>
-                <div class="mode-btn" onclick="setMode('mul', this)">Mul(×)</div>
+            <div class="briefing-box">
+                🚀 <b>Mission:</b> Reach the goal to Level Up!<br>
+                ⏰ <b>Time:</b> Gets shorter as you level up.<br>
+                ⚠️ <b>Warning:</b> Wrong answer skips.
             </div>
-            <div class="ranking-list" id="ranking-box">
-                <div style="text-align:center; font-weight:bold; margin-bottom:8px; color:#f57c00;">🏆 TOP 10 HALL OF
-                    FAME</div>
+            <div class="mode-select">
+                <div class="mode-btn active" onclick="setMode('add', this)">Addition(+)</div>
+                <div class="mode-btn" onclick="setMode('sub', this)">Subtraction(-)</div>
+                <div class="mode-btn" onclick="setMode('mul', this)">Multiplication(×)</div>
+                <div class="mode-btn" onclick="setMode('div', this)">Division(÷)</div>
+                <div class="mode-btn" style="grid-column: span 2;" onclick="setMode('all', this)">All-in-One Master
+                </div>
+                <button class="start-btn" onclick="startGame()">MISSION START!</button>
+            </div>
+            <div class="ranking-list">
                 <div id="ranking-content"></div>
             </div>
-            <button class="start-btn" onclick="startGame()">Let's Play!</button>
         </div>
 
         <div id="game-screen" class="hidden">
-            <div id="level-display">Lv. 1</div>
-            <div id="info-box">
-                <span>⭐ <span id="score">0</span>/50</span>
+            <div id="level-header">Level 1</div>
+            <div id="info-box" style="margin-top: 15px;">
+                <span>⭐ <span id="score">0</span>/<span id="goal">50</span></span>
                 <span id="timer" style="color:var(--error)">⏰ 20s</span>
             </div>
-            <div id="question">? × ?</div>
-            <div class="options-grid">
-                <button>0</button><button>0</button><button>0</button><button>0</button>
-            </div>
+            <div id="question">?</div>
+            <div class="options-grid"><button>0</button><button>0</button><button>0</button><button>0</button></div>
         </div>
 
         <div id="result-screen" class="hidden">
-            <h2 style="color: var(--error); font-size: 2rem;">TIME'S UP!</h2>
-            <p style="font-weight:bold; color:#78909c;">Final Score</p>
+            <h2 id="result-title" style="font-size: 2rem; color: var(--primary);">MISSION OVER</h2>
             <div style="font-size: 4rem; font-weight: 900; margin: 10px 0; color:var(--accent);"
                 id="final-score-display">0</div>
-
-            <div id="name-input-area" class="hidden" style="margin-bottom: 15px;">
-                <p style="color: var(--success); font-weight: bold;">NEW RECORD! 🥇</p>
-                <input type="text" id="player-name" placeholder="Name" maxlength="8">
-                <button onclick="saveRanking()"
-                    style="width: auto; padding: 10px 20px; font-size: 1.1rem; background: var(--accent); margin-top:10px; border-radius:15px; color:white; font-weight:bold;">Save</button>
+            <div id="name-input-area" class="hidden">
+                <input type="text" id="player-name" placeholder="Pilot Name" maxlength="8">
+                <button onclick="saveRanking()" style="background: var(--accent); box-shadow: 0 5px 0 #4a148c;">SAVE
+                    DATA</button>
             </div>
-            <button onclick="location.reload()" style="background:#90a4ae; box-shadow:0 6px 0 #546e7a;">Go Home</button>
+            <button class="share-btn" onclick="shareResult()">SHARE MISSION REPORT 📡</button>
+            <button onclick="location.reload()"
+                style="background:#78909c; box-shadow: 0 5px 0 #455a64; margin-top:15px;">BACK TO BASE</button>
         </div>
     </div>
 
     <script>
-        let score = 0, levelScore = 0, correctAnswer = 0, timeLeft = 20, timerInterval, gameMode = 'add', level = 1;
-
-        // 사운드 파일 주소 최적화
-        const sounds = {
-            correct: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'),
-            wrong: new Audio('https://assets.mixkit.co/active_storage/sfx/2022/2022-preview.mp3'),
-            levelUp: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
-            gameOver: new Audio('https://assets.mixkit.co/active_storage/sfx/1433/1433-preview.mp3'),
-            ranking: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
-            bgm: new Audio('https://assets.mixkit.co/music/preview/mixkit-game-level-music-689.mp3')
+        let score = 0, levelScore = 0, correctAnswer = 0, timeLeft = 20, timerInterval, gameMode = 'add', level = 1, goalScore = 50, baseTime = 20;
+        const soundURLs = {
+            correct: 'https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3',
+            wrong: 'https://assets.mixkit.co/active_storage/sfx/2022/2022-preview.mp3',
+            levelUp: 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3',
+            gameOver: 'https://assets.mixkit.co/active_storage/sfx/1433/1433-preview.mp3',
+            awards: 'https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'
         };
 
-        sounds.bgm.loop = true;
-        sounds.bgm.volume = 0.3;
+        function playSound(type) { new Audio(soundURLs[type]).play().catch(() => { }); }
+        function showLevelUpMsg() {
+            const msgEl = document.getElementById('feedback-msg');
+            msgEl.classList.add('show-msg');
+            setTimeout(() => msgEl.classList.remove('show-msg'), 1500);
+        }
 
         updateRankingDisplay();
-
-        // 브라우저 사운드 정책 해결을 위한 잠금 해제 함수
-        function unlockAudio() {
-            Object.values(sounds).forEach(audio => {
-                audio.play().then(() => {
-                    audio.pause();
-                    audio.currentTime = 0;
-                }).catch(() => { });
-            });
-        }
 
         function setMode(mode, el) {
             gameMode = mode;
@@ -298,49 +339,47 @@
         }
 
         function startGame() {
-            unlockAudio(); // 버튼 클릭과 동시에 사운드 권한 획득
-
-            score = 0; levelScore = 0; timeLeft = 20; level = 1;
+            score = 0; level = 1; goalScore = 50; baseTime = (gameMode === 'all') ? 25 : 20; timeLeft = baseTime;
             document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
-
-            setTimeout(() => {
-                sounds.bgm.play().catch(e => console.log("BGM fail", e));
-            }, 100);
-
-            updateUI();
-            generateQuestion();
-            startTimer();
-        }
-
-        function updateUI() {
-            document.getElementById('score').innerText = levelScore;
-            document.getElementById('level-display').innerText = "Level " + level;
-            document.getElementById('timer').innerText = "⏰ " + timeLeft + "s";
+            updateUI(); generateQuestion(); startTimer();
         }
 
         function generateQuestion() {
-            let range = 10 + (level * 5);
-            let n1 = Math.floor(Math.random() * range) + 1;
-            let n2 = Math.floor(Math.random() * range) + 1;
-            let symbol = "";
-
-            if (gameMode === 'add') { correctAnswer = n1 + n2; symbol = "+"; }
-            else if (gameMode === 'sub') { if (n1 < n2) [n1, n2] = [n2, n1]; correctAnswer = n1 - n2; symbol = "-"; }
-            else { n1 = Math.floor(Math.random() * (level + 8)) + 1; n2 = Math.floor(Math.random() * 9) + 1; correctAnswer = n1 * n2; symbol = "×"; }
-
-            document.getElementById('question').innerText = `${n1} ${symbol} ${n2}`;
+            let n1, n2, n3, symbol1;
+            const ops = ['+', '-', '*', '/'];
+            if (gameMode === 'div') {
+                n2 = Math.floor(Math.random() * 9) + 1; correctAnswer = Math.floor(Math.random() * 9) + 1; n1 = n2 * correctAnswer;
+                document.getElementById('question').innerText = `${n1} ÷ ${n2}`;
+            } else if (gameMode === 'all') {
+                symbol1 = ops[Math.floor(Math.random() * 4)];
+                if (symbol1 === '/') {
+                    n2 = Math.floor(Math.random() * 9) + 1; n3 = Math.floor(Math.random() * 9) + 1; n1 = n2 * n3;
+                    correctAnswer = n3; document.getElementById('question').innerText = `${n1} ÷ ${n2}`;
+                } else if (symbol1 === '*') {
+                    n1 = Math.floor(Math.random() * 9) + 1; n2 = Math.floor(Math.random() * 9) + 1;
+                    correctAnswer = n1 * n2; document.getElementById('question').innerText = `${n1} × ${n2}`;
+                } else {
+                    n1 = Math.floor(Math.random() * 20) + 1; n2 = Math.floor(Math.random() * 20) + 1;
+                    if (symbol1 === '-') { if (n1 < n2) [n1, n2] = [n2, n1]; correctAnswer = n1 - n2; }
+                    else correctAnswer = n1 + n2;
+                    document.getElementById('question').innerText = `${n1} ${symbol1 === '+' ? '+' : '-'} ${n2}`;
+                }
+            } else {
+                n1 = Math.floor(Math.random() * 20) + 1; n2 = Math.floor(Math.random() * 20) + 1;
+                if (gameMode === 'add') { correctAnswer = n1 + n2; symbol1 = "+"; }
+                else if (gameMode === 'sub') { if (n1 < n2) [n1, n2] = [n2, n1]; correctAnswer = n1 - n2; symbol1 = "-"; }
+                else { n1 = Math.floor(Math.random() * 9) + 1; n2 = Math.floor(Math.random() * 9) + 1; correctAnswer = n1 * n2; symbol1 = "×"; }
+                document.getElementById('question').innerText = `${n1} ${symbol1} ${n2}`;
+            }
             let options = [correctAnswer];
             while (options.length < 4) {
-                let offset = Math.floor(Math.random() * (5 + level)) + 1;
-                let wrong = Math.random() > 0.5 ? correctAnswer + offset : correctAnswer - offset;
-                if (wrong >= 0 && !options.includes(wrong)) options.push(wrong);
+                let wrong = correctAnswer + (Math.floor(Math.random() * 10) - 5);
+                if (wrong >= 0 && !options.includes(wrong) && wrong !== correctAnswer) options.push(wrong);
             }
             options.sort(() => Math.random() - 0.5);
             document.querySelectorAll('#game-screen .options-grid button').forEach((btn, i) => {
-                btn.innerText = options[i];
-                btn.onclick = () => check(options[i]);
+                btn.innerText = options[i]; btn.onclick = () => check(options[i]);
             });
         }
 
@@ -355,67 +394,65 @@
 
         function check(answer) {
             if (answer === correctAnswer) {
-                sounds.correct.cloneNode().play().catch(e => { });
-                score += 10;
-                levelScore += 10;
-                if (levelScore >= 50) triggerLevelUp();
-                else { updateUI(); generateQuestion(); }
+                playSound('correct'); score += 10;
+                if (score >= goalScore) {
+                    level++; goalScore = level * 50; baseTime = Math.max(2, baseTime - 2); timeLeft = baseTime;
+                    playSound('levelUp'); showLevelUpMsg();
+                }
+                updateUI(); generateQuestion();
             } else {
-                sounds.wrong.cloneNode().play().catch(e => { });
-                document.getElementById('main-card').classList.add('shake');
-                score = Math.max(0, score - 5);
-                updateUI();
-                setTimeout(() => { document.getElementById('main-card').classList.remove('shake'); generateQuestion(); }, 300);
+                playSound('wrong'); document.getElementById('main-card').classList.add('shake'); score = Math.max(0, score - 5);
+                updateUI(); setTimeout(() => { document.getElementById('main-card').classList.remove('shake'); generateQuestion(); }, 300);
             }
-        }
-
-        function triggerLevelUp() {
-            level++; levelScore = 0; timeLeft = 20;
-            sounds.levelUp.currentTime = 0;
-            sounds.levelUp.play().catch(e => { });
-            document.body.classList.add('level-up-anim');
-            setTimeout(() => {
-                document.body.classList.remove('level-up-anim');
-                updateUI();
-                generateQuestion();
-            }, 1000);
         }
 
         function showResult() {
-            sounds.bgm.pause();
-            sounds.bgm.currentTime = 0;
-            sounds.gameOver.currentTime = 0;
-            sounds.gameOver.play().catch(e => { });
-
+            clearInterval(timerInterval);
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score-display').innerText = score;
-
             const rankings = JSON.parse(localStorage.getItem('rank_' + gameMode) || "[]");
             if ((rankings.length < 10 || score > (rankings[rankings.length - 1]?.score || 0)) && score > 0) {
+                document.getElementById('result-title').innerText = "NEW RECORD! 🎉";
                 document.getElementById('name-input-area').classList.remove('hidden');
-            }
+                setTimeout(() => playSound('awards'), 100);
+            } else { playSound('gameOver'); }
+        }
+
+        function updateUI() {
+            document.getElementById('score').innerText = score;
+            document.getElementById('goal').innerText = goalScore;
+            document.getElementById('level-header').innerText = `MISSION LV. ${level} (⏰ ${baseTime}s)`;
         }
 
         function saveRanking() {
-            const name = document.getElementById('player-name').value || "Guest";
+            const name = document.getElementById('player-name').value || "Pilot";
             let rankings = JSON.parse(localStorage.getItem('rank_' + gameMode) || "[]");
-            rankings.push({ name: name, score: score });
+            rankings.push({ name, score });
             rankings.sort((a, b) => b.score - a.score);
             localStorage.setItem('rank_' + gameMode, JSON.stringify(rankings.slice(0, 10)));
-            sounds.ranking.play().catch(e => { });
-            setTimeout(() => { location.reload(); }, 1200);
+            location.reload();
+        }
+
+        // 결과 공유 함수
+        function shareResult() {
+            const shareText = `🚀 Math Blitz Mission Report! ⚡\nI reached Level ${level} with a score of ${score} in ${gameMode.toUpperCase()} mode!\nCan you beat my record?`;
+            if (navigator.share) {
+                navigator.share({ title: 'Math Blitz Result', text: shareText, url: window.location.href }).catch(console.error);
+            } else {
+                alert("Sharing not supported on this browser. Here's your report:\n\n" + shareText);
+            }
         }
 
         function updateRankingDisplay() {
             const rankings = JSON.parse(localStorage.getItem('rank_' + gameMode) || "[]");
-            let html = rankings.length === 0 ? "<div style='text-align:center'>Be the first champ!</div>" : "";
+            let modeTitle = gameMode.toUpperCase();
+            if (gameMode === 'all') modeTitle = "MASTER";
+            let html = `<div style="text-align:center; font-weight:900; margin-bottom:10px; color:var(--primary); font-size:1.1rem;">🏆 ${modeTitle} TOP 10</div>`;
+            if (rankings.length === 0) html += "<div style='text-align:center; color:#90a4ae;'>No mission reports yet.</div>";
             rankings.forEach((r, i) => {
-                const isTop = i < 3 ? 'top-ranker' : '';
-                html += `<div class="ranking-item">
-                            <span class="${isTop}">${i + 1}. ${r.name}</span> 
-                            <span style="color:var(--accent)">${r.score}</span>
-                         </div>`;
+                const color = i < 3 ? '#fbc02d' : 'inherit';
+                html += `<div class="ranking-item"><span style="color:${color}">${i + 1}. ${r.name}</span> <span style="font-weight:900">${r.score}</span></div>`;
             });
             document.getElementById('ranking-content').innerHTML = html;
         }
