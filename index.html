@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Global Math Hero</title>
+    <title>Math Blitz: 30s Challenge</title>
     <style>
         :root {
             --main-bg: #f8f9fa;
@@ -12,6 +12,7 @@
             --primary: #0d77f0;
             --success: #2ecc71;
             --error: #e74c3c;
+            --share: #9b59b6;
         }
 
         body {
@@ -49,7 +50,6 @@
             margin-top: 1.5rem;
         }
 
-        /* 버튼 스타일 */
         button {
             padding: 20px;
             font-size: 1.5rem;
@@ -60,6 +60,7 @@
             cursor: pointer;
             transition: 0.2s;
             width: 100%;
+            font-weight: bold;
         }
 
         button:active {
@@ -68,8 +69,14 @@
 
         .start-btn {
             background: var(--success);
-            font-weight: bold;
             font-size: 1.8rem;
+        }
+
+        .share-btn {
+            background: var(--share);
+            margin-top: 10px;
+            font-size: 1.2rem;
+            padding: 15px;
         }
 
         #score,
@@ -86,12 +93,10 @@
             font-weight: bold;
         }
 
-        /* 화면 전환용 */
         .hidden {
             display: none;
         }
 
-        /* 애니메이션 */
         @keyframes shake {
 
             0%,
@@ -117,9 +122,9 @@
 <body>
     <div class="game-card" id="main-card">
         <div id="start-screen">
-            <h1 style="color: var(--primary); margin-bottom: 30px;">Math Hero</h1>
-            <p style="color: #666; margin-bottom: 40px;">How many problems can you solve<br>in 30 seconds?</p>
-            <button class="start-btn" onclick="startGame()">START</button>
+            <h1 style="color: var(--primary); margin-bottom: 10px;">Math Blitz</h1>
+            <p style="color: #666; margin-bottom: 40px; font-size: 1.1rem;">30 Seconds Challenge!</p>
+            <button class="start-btn" onclick="startGame()">START GAME</button>
         </div>
 
         <div id="game-screen" class="hidden">
@@ -135,9 +140,10 @@
 
         <div id="result-screen" class="hidden">
             <h2 id="result-comment" style="color: var(--success);">Great Job!</h2>
-            <p style="font-size: 1.2rem; margin: 0;">Your Final Score</p>
+            <p style="font-size: 1.2rem; margin: 0;">Final Score</p>
             <div id="final-score-display" style="font-size: 3.5rem; font-weight: bold; margin: 15px 0;">0</div>
-            <button onclick="startGame()" style="background: var(--primary);">Play Again</button>
+            <button onclick="startGame()">Play Again</button>
+            <button class="share-btn" onclick="shareScore()">Share My Score 📤</button>
         </div>
     </div>
 
@@ -150,18 +156,14 @@
         const correctSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
         const wrongSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2022/2022-preview.mp3');
 
-        // 게임 시작 함수
         function startGame() {
             score = 0;
             timeLeft = 30;
             document.getElementById('score').innerText = "Score: 0";
             document.getElementById('timer').innerText = "Time: 30s";
-
-            // 화면 전환
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
-
             generateQuestion();
             startTimer();
         }
@@ -171,15 +173,13 @@
             const num2 = Math.floor(Math.random() * 9) + 1;
             correctAnswer = num1 * num2;
             document.getElementById('question').innerText = `${num1} × ${num2}`;
-
             let options = [correctAnswer];
             while (options.length < 4) {
                 let wrong = (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 9) + 1);
                 if (!options.includes(wrong)) options.push(wrong);
             }
             options.sort(() => Math.random() - 0.5);
-
-            const buttons = document.querySelectorAll('.options-grid button');
+            const buttons = document.querySelectorAll('#game-screen .options-grid button');
             buttons.forEach((btn, index) => {
                 btn.innerText = options[index];
                 btn.onclick = () => check(options[index]);
@@ -201,13 +201,7 @@
         function showResult() {
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
-
-            let message = "";
-            if (score >= 150) message = "You're a Math Genius! 👑";
-            else if (score >= 100) message = "Amazing work! 🌟";
-            else if (score >= 50) message = "Good job! 👍";
-            else message = "Nice try! 💪";
-
+            let message = score >= 150 ? "Math Genius! 👑" : score >= 100 ? "Amazing! 🌟" : score >= 50 ? "Good! 👍" : "Nice try! 💪";
             document.getElementById('result-comment').innerText = message;
             document.getElementById('final-score-display').innerText = score;
         }
@@ -228,6 +222,20 @@
                     card.classList.remove('shake');
                     generateQuestion();
                 }, 300);
+            }
+        }
+
+        // 공유 기능 함수
+        function shareScore() {
+            const text = `I scored ${score} points on Math Blitz! Can you beat me? 🔥`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Math Blitz Challenge',
+                    text: text,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                alert("Sharing is not supported on this browser. Copy the URL to share!");
             }
         }
     </script>
