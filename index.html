@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Global Math Hero</title>
+    <style>
+        :root {
+            --main-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --primary: #0d77f0;
+        }
+
+        body {
+            background: var(--main-bg);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #question {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: #333;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 2rem;
+        }
+
+        button {
+            padding: 20px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 15px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            opacity: 0.9;
+        }
+
+        #score {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        /* 흔들리는 애니메이션 정의 */
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            50% {
+                transform: translateX(10px);
+            }
+
+            75% {
+                transform: translateX(-10px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        /* 애니메이션을 실행할 클래스 */
+        .shake {
+            animation: shake 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-card">
+        <div id="score">Score: 0</div>
+        <div id="question">7 × 8</div>
+        <div class="options-grid">
+            <button onclick="check(48)">48</button>
+            <button onclick="check(56)">56</button>
+            <button onclick="check(63)">63</button>
+            <button onclick="check(72)">72</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let correctAnswer = 0;
+
+        function generateQuestion() {
+            const num1 = Math.floor(Math.random() * 9) + 1;
+            const num2 = Math.floor(Math.random() * 9) + 1;
+            correctAnswer = num1 * num2;
+
+            document.getElementById('question').innerText = `${num1} × ${num2}`;
+
+            // 1. 정답과 오답들을 섞어서 배열로 만듭니다.
+            let options = [
+                correctAnswer,
+                correctAnswer + 2,
+                correctAnswer - 2,
+                correctAnswer + 5
+            ];
+
+            // 2. 배열을 무작위로 섞습니다. (정답이 항상 같은 자리에 있으면 안 되니까요!)
+            options.sort(() => Math.random() - 0.5);
+
+            // 3. 화면에 있는 버튼 4개에 숫자를 하나씩 넣어줍니다.
+            const buttons = document.querySelectorAll('.options-grid button');
+            buttons.forEach((btn, index) => {
+                btn.innerText = options[index]; // 버튼에 숫자 표시
+                btn.onclick = () => check(options[index]); // 버튼 클릭 시 해당 숫자 체크
+            });
+        }
+        function check(answer) {
+            const card = document.querySelector('.game-card');
+
+            if (answer === correctAnswer) {
+                score += 10;
+                document.getElementById('score').innerText = "Score: " + score;
+                generateQuestion();
+            } else {
+                // 틀렸을 때 애니메이션 클래스 추가
+                card.classList.add('shake');
+
+                // 0.3초 후 애니메이션 클래스 제거 (재사용을 위해)
+                setTimeout(() => {
+                    card.classList.remove('shake');
+                }, 300);
+            }
+        }
+
+        // 처음 시작할 때 문제 생성
+        generateQuestion();
+    </script>
+</body>
+
+</html>
