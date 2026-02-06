@@ -5,108 +5,197 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="google-site-verification" content="8B96YQh7CPi_WLObdAuHL5NOioqLdWoROKyj89W-LLQ" />
-    <title>Math Blitz: 30s Challenge</title>
-    <meta name="description"
-        content="Challenge your brain with Math Blitz! A fast-paced 30-second math game to improve your mental calculation skills. Play for free now!">
-    <meta name="keywords" content="Math Game, Speed Math, Mental Arithmetic, Educational Game, Math Blitz">
-
-    <meta property="og:title" content="Math Blitz: 30s Challenge">
-    <meta property="og:description"
-        content="Can you beat the 30-second math challenge? Test your speed and score high!">
-    <meta property="og:url" content="https://math-hero-song.vercel.app">
-    <meta property="og:type" content="website">
-
+    <title>Math Blitz: Master Edition</title>
     <style>
         :root {
-            --main-bg: #f8f9fa;
+            --main-bg: #e0f2f1;
             --card-bg: #ffffff;
-            --primary: #0d77f0;
-            --success: #2ecc71;
-            --error: #e74c3c;
-            --share: #9b59b6;
+            --primary: #4fc3f7;
+            --success: #81c784;
+            --error: #ff8a65;
+            --level: #ffd54f;
+            --text: #37474f;
+            --accent: #ba68c8;
+            --gold: #ffc107;
         }
 
         body {
             background: var(--main-bg);
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', 'Nanum Gothic', sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
             overflow: hidden;
+            transition: background 0.5s ease;
         }
 
         .game-card {
             background: var(--card-bg);
             width: 90%;
             max-width: 400px;
-            padding: 2.5rem 1.5rem;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 2rem 1.5rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 0 rgba(0, 0, 0, 0.05);
             text-align: center;
+            border: 8px solid #b2dfdb;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes rainbow-flash {
+            0% {
+                background: #ffcdd2;
+            }
+
+            20% {
+                background: #fff9c4;
+            }
+
+            40% {
+                background: #c8e6c9;
+            }
+
+            60% {
+                background: #b3e5fc;
+            }
+
+            80% {
+                background: #d1c4e9;
+            }
+
+            100% {
+                background: var(--main-bg);
+            }
+        }
+
+        .level-up-anim {
+            animation: rainbow-flash 1s ease infinite;
+        }
+
+        h1 {
+            color: #0288d1;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 #e1f5fe;
         }
 
         #question {
             font-size: 3.5rem;
-            font-weight: bold;
-            margin: 1rem 0;
-            color: #333;
+            font-weight: 900;
+            margin: 0.5rem 0;
+            color: var(--text);
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
         }
 
         button {
-            padding: 20px;
-            font-size: 1.5rem;
+            padding: 18px;
+            font-size: 1.6rem;
             border: none;
-            border-radius: 15px;
+            border-radius: 20px;
             background: var(--primary);
             color: white;
             cursor: pointer;
             transition: 0.2s;
             width: 100%;
             font-weight: bold;
-            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 6px 0 #0288d1;
         }
 
         button:active {
-            transform: scale(0.95);
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #0288d1;
+        }
+
+        .mode-btn {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            background: #eceff1;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            font-weight: bold;
+        }
+
+        .mode-btn.active {
+            border-color: var(--primary);
+            background: #e1f5fe;
+            color: #0277bd;
         }
 
         .start-btn {
             background: var(--success);
+            box-shadow: 0 6px 0 #43a047;
             font-size: 1.8rem;
+            margin-top: 15px;
         }
 
-        .share-btn {
-            background: var(--share);
-            margin-top: 10px;
+        #info-box {
+            display: flex;
+            justify-content: space-between;
             font-size: 1.2rem;
-            padding: 15px;
-        }
-
-        #score,
-        #timer {
-            font-size: 1.2rem;
-            color: #666;
-            margin: 5px;
-            display: inline-block;
-            width: 45%;
-        }
-
-        #timer {
-            color: var(--error);
             font-weight: bold;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 15px;
+        }
+
+        #level-display {
+            color: #f57c00;
+            font-size: 1.4rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .ranking-list {
+            text-align: left;
+            margin: 15px 0;
+            padding: 15px;
+            background: #fffde7;
+            border-radius: 20px;
+            border: 3px dashed #fff176;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #fff9c4;
+            color: #5d4037;
+            font-weight: bold;
+        }
+
+        .top-ranker {
+            color: #d84315;
+            background: #fff9c4;
+            border-radius: 8px;
+            padding: 2px 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            padding: 12px;
+            width: 60%;
+            border-radius: 12px;
+            border: 3px solid #eee;
+            font-size: 1rem;
+            outline: none;
         }
 
         .hidden {
             display: none;
+        }
+
+        .shake {
+            animation: shake 0.3s;
         }
 
         @keyframes shake {
@@ -117,16 +206,12 @@
             }
 
             25% {
-                transform: translateX(-8px);
+                transform: translateX(-10px);
             }
 
             75% {
-                transform: translateX(8px);
+                transform: translateX(10px);
             }
-        }
-
-        .shake {
-            animation: shake 0.3s;
         }
     </style>
 </head>
@@ -134,69 +219,128 @@
 <body>
     <div class="game-card" id="main-card">
         <div id="start-screen">
-            <h1 style="color: var(--primary); margin-bottom: 10px;">Math Blitz</h1>
-            <p style="color: #666; margin-bottom: 40px; font-size: 1.1rem;">30 Seconds Challenge!</p>
-            <button class="start-btn" onclick="startGame()">START GAME</button>
+            <h1>Math Blitz! ⚡</h1>
+            <p style="color: #546e7a; font-weight: bold;">Level Up & Get Extra Time!</p>
+            <div class="mode-select" style="display:flex; gap:8px; justify-content:center; margin-bottom:15px;">
+                <div class="mode-btn active" onclick="setMode('add', this)">Add(+)</div>
+                <div class="mode-btn" onclick="setMode('sub', this)">Sub(-)</div>
+                <div class="mode-btn" onclick="setMode('mul', this)">Mul(×)</div>
+            </div>
+            <div class="ranking-list" id="ranking-box">
+                <div style="text-align:center; font-weight:bold; margin-bottom:8px; color:#f57c00;">🏆 TOP 10 HALL OF
+                    FAME</div>
+                <div id="ranking-content"></div>
+            </div>
+            <button class="start-btn" onclick="startGame()">Let's Play!</button>
         </div>
 
         <div id="game-screen" class="hidden">
-            <div>
-                <div id="score">Score: 0</div>
-                <div id="timer">Time: 30s</div>
+            <div id="level-display">Lv. 1</div>
+            <div id="info-box">
+                <span>⭐ <span id="score">0</span>/50</span>
+                <span id="timer" style="color:var(--error)">⏰ 20s</span>
             </div>
-            <div id="question">Loading...</div>
+            <div id="question">? × ?</div>
             <div class="options-grid">
                 <button>0</button><button>0</button><button>0</button><button>0</button>
             </div>
         </div>
 
         <div id="result-screen" class="hidden">
-            <h2 id="result-comment" style="color: var(--success);">Great Job!</h2>
-            <p style="font-size: 1.2rem; margin: 0;">Final Score</p>
-            <div id="final-score-display" style="font-size: 3.5rem; font-weight: bold; margin: 15px 0;">0</div>
-            <button onclick="startGame()">Play Again</button>
-            <button class="share-btn" onclick="shareScore()">Share My Score 📤</button>
+            <h2 style="color: var(--error); font-size: 2rem;">TIME'S UP!</h2>
+            <p style="font-weight:bold; color:#78909c;">Final Score</p>
+            <div style="font-size: 4rem; font-weight: 900; margin: 10px 0; color:var(--accent);"
+                id="final-score-display">0</div>
+
+            <div id="name-input-area" class="hidden" style="margin-bottom: 15px;">
+                <p style="color: var(--success); font-weight: bold;">NEW RECORD! 🥇</p>
+                <input type="text" id="player-name" placeholder="Name" maxlength="8">
+                <button onclick="saveRanking()"
+                    style="width: auto; padding: 10px 20px; font-size: 1.1rem; background: var(--accent); margin-top:10px; border-radius:15px; color:white; font-weight:bold;">Save</button>
+            </div>
+            <button onclick="location.reload()" style="background:#90a4ae; box-shadow:0 6px 0 #546e7a;">Go Home</button>
         </div>
     </div>
 
     <script>
-        let score = 0;
-        let correctAnswer = 0;
-        let timeLeft = 30;
-        let timerInterval;
+        let score = 0, levelScore = 0, correctAnswer = 0, timeLeft = 20, timerInterval, gameMode = 'add', level = 1;
 
-        const correctSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
-        const wrongSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2022/2022-preview.mp3');
+        // 사운드 파일 주소 최적화
+        const sounds = {
+            correct: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'),
+            wrong: new Audio('https://assets.mixkit.co/active_storage/sfx/2022/2022-preview.mp3'),
+            levelUp: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
+            gameOver: new Audio('https://assets.mixkit.co/active_storage/sfx/1433/1433-preview.mp3'),
+            ranking: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
+            bgm: new Audio('https://assets.mixkit.co/music/preview/mixkit-game-level-music-689.mp3')
+        };
+
+        sounds.bgm.loop = true;
+        sounds.bgm.volume = 0.3;
+
+        updateRankingDisplay();
+
+        // 브라우저 사운드 정책 해결을 위한 잠금 해제 함수
+        function unlockAudio() {
+            Object.values(sounds).forEach(audio => {
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }).catch(() => { });
+            });
+        }
+
+        function setMode(mode, el) {
+            gameMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            updateRankingDisplay();
+        }
 
         function startGame() {
-            score = 0;
-            timeLeft = 30;
-            document.getElementById('score').innerText = "Score: 0";
-            document.getElementById('timer').innerText = "Time: 30s";
+            unlockAudio(); // 버튼 클릭과 동시에 사운드 권한 획득
+
+            score = 0; levelScore = 0; timeLeft = 20; level = 1;
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
+
+            setTimeout(() => {
+                sounds.bgm.play().catch(e => console.log("BGM fail", e));
+            }, 100);
+
+            updateUI();
             generateQuestion();
             startTimer();
         }
 
-        function generateQuestion() {
-            const num1 = Math.floor(Math.random() * 9) + 1;
-            const num2 = Math.floor(Math.random() * 9) + 1;
-            correctAnswer = num1 * num2;
-            document.getElementById('question').innerText = `${num1} × ${num2}`;
+        function updateUI() {
+            document.getElementById('score').innerText = levelScore;
+            document.getElementById('level-display').innerText = "Level " + level;
+            document.getElementById('timer').innerText = "⏰ " + timeLeft + "s";
+        }
 
+        function generateQuestion() {
+            let range = 10 + (level * 5);
+            let n1 = Math.floor(Math.random() * range) + 1;
+            let n2 = Math.floor(Math.random() * range) + 1;
+            let symbol = "";
+
+            if (gameMode === 'add') { correctAnswer = n1 + n2; symbol = "+"; }
+            else if (gameMode === 'sub') { if (n1 < n2) [n1, n2] = [n2, n1]; correctAnswer = n1 - n2; symbol = "-"; }
+            else { n1 = Math.floor(Math.random() * (level + 8)) + 1; n2 = Math.floor(Math.random() * 9) + 1; correctAnswer = n1 * n2; symbol = "×"; }
+
+            document.getElementById('question').innerText = `${n1} ${symbol} ${n2}`;
             let options = [correctAnswer];
             while (options.length < 4) {
-                let wrong = (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 9) + 1);
-                if (!options.includes(wrong)) options.push(wrong);
+                let offset = Math.floor(Math.random() * (5 + level)) + 1;
+                let wrong = Math.random() > 0.5 ? correctAnswer + offset : correctAnswer - offset;
+                if (wrong >= 0 && !options.includes(wrong)) options.push(wrong);
             }
             options.sort(() => Math.random() - 0.5);
-
-            const buttons = document.querySelectorAll('#game-screen .options-grid button');
-            buttons.forEach((btn, index) => {
-                btn.innerText = options[index];
-                btn.onclick = () => check(options[index]);
+            document.querySelectorAll('#game-screen .options-grid button').forEach((btn, i) => {
+                btn.innerText = options[i];
+                btn.onclick = () => check(options[i]);
             });
         }
 
@@ -204,54 +348,76 @@
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 timeLeft--;
-                document.getElementById('timer').innerText = "Time: " + timeLeft + "s";
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    showResult();
-                }
+                document.getElementById('timer').innerText = "⏰ " + timeLeft + "s";
+                if (timeLeft <= 0) { clearInterval(timerInterval); showResult(); }
+            }, 1000);
+        }
+
+        function check(answer) {
+            if (answer === correctAnswer) {
+                sounds.correct.cloneNode().play().catch(e => { });
+                score += 10;
+                levelScore += 10;
+                if (levelScore >= 50) triggerLevelUp();
+                else { updateUI(); generateQuestion(); }
+            } else {
+                sounds.wrong.cloneNode().play().catch(e => { });
+                document.getElementById('main-card').classList.add('shake');
+                score = Math.max(0, score - 5);
+                updateUI();
+                setTimeout(() => { document.getElementById('main-card').classList.remove('shake'); generateQuestion(); }, 300);
+            }
+        }
+
+        function triggerLevelUp() {
+            level++; levelScore = 0; timeLeft = 20;
+            sounds.levelUp.currentTime = 0;
+            sounds.levelUp.play().catch(e => { });
+            document.body.classList.add('level-up-anim');
+            setTimeout(() => {
+                document.body.classList.remove('level-up-anim');
+                updateUI();
+                generateQuestion();
             }, 1000);
         }
 
         function showResult() {
+            sounds.bgm.pause();
+            sounds.bgm.currentTime = 0;
+            sounds.gameOver.currentTime = 0;
+            sounds.gameOver.play().catch(e => { });
+
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
-            let message = score >= 150 ? "Math Genius! 👑" : score >= 100 ? "Amazing! 🌟" : score >= 50 ? "Good! 👍" : "Nice try! 💪";
-            document.getElementById('result-comment').innerText = message;
             document.getElementById('final-score-display').innerText = score;
-        }
 
-        function check(answer) {
-            const card = document.getElementById('main-card');
-            if (answer === correctAnswer) {
-                const sfx = correctSound.cloneNode();
-                sfx.play().catch(e => { });
-                score += 10;
-                document.getElementById('score').innerText = "Score: " + score;
-                generateQuestion();
-            } else {
-                const sfx = wrongSound.cloneNode();
-                sfx.play().catch(e => { });
-                card.classList.add('shake');
-                score = Math.max(0, score - 5);
-                document.getElementById('score').innerText = "Score: " + score;
-                setTimeout(() => {
-                    card.classList.remove('shake');
-                    generateQuestion();
-                }, 300);
+            const rankings = JSON.parse(localStorage.getItem('rank_' + gameMode) || "[]");
+            if ((rankings.length < 10 || score > (rankings[rankings.length - 1]?.score || 0)) && score > 0) {
+                document.getElementById('name-input-area').classList.remove('hidden');
             }
         }
 
-        function shareScore() {
-            const text = `I scored ${score} points on Math Blitz! Can you beat me? 🔥`;
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Math Blitz Challenge',
-                    text: text,
-                    url: window.location.href
-                }).catch(console.error);
-            } else {
-                alert("URL을 복사하여 친구들에게 공유해 보세요!");
-            }
+        function saveRanking() {
+            const name = document.getElementById('player-name').value || "Guest";
+            let rankings = JSON.parse(localStorage.getItem('rank_' + gameMode) || "[]");
+            rankings.push({ name: name, score: score });
+            rankings.sort((a, b) => b.score - a.score);
+            localStorage.setItem('rank_' + gameMode, JSON.stringify(rankings.slice(0, 10)));
+            sounds.ranking.play().catch(e => { });
+            setTimeout(() => { location.reload(); }, 1200);
+        }
+
+        function updateRankingDisplay() {
+            const rankings = JSON.parse(localStorage.getItem('rank_' + gameMode) || "[]");
+            let html = rankings.length === 0 ? "<div style='text-align:center'>Be the first champ!</div>" : "";
+            rankings.forEach((r, i) => {
+                const isTop = i < 3 ? 'top-ranker' : '';
+                html += `<div class="ranking-item">
+                            <span class="${isTop}">${i + 1}. ${r.name}</span> 
+                            <span style="color:var(--accent)">${r.score}</span>
+                         </div>`;
+            });
+            document.getElementById('ranking-content').innerHTML = html;
         }
     </script>
 </body>
